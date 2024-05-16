@@ -35,3 +35,6 @@ A simple yet powerful Bash script for automating file uploads to Amazon S3 bucke
 
 ```bash
 ./s3_uploader.sh my_document.txt my-important-files
+
+
+![System-Diagram](clouduploader/Resources/DiagramS3Uploader)
