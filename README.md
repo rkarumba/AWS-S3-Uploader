@@ -41,7 +41,7 @@ Zip your awesome car show footage and send it to the "sweet-car-flicks" bucket! 
 
 ## Under the Hood ⚙️
 
-![System Diagram](clouduploader/Resources/DiagramS3Uploader.jpg)
+![System Diagram](clouduploader/Resources/DiagramS3Uploader.png)
 
 See how it all connects? The script, your files, AWS CLI, and your S3 bucket – working together in perfect harmony. 🎶
 
