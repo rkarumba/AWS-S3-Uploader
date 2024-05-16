@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script that uploads files to an S3 Bucket in AWS
+# Script that uploads multiple files to an S3 Bucket in AWS
 
 # Error Handling
 if [[ $# -lt 2 ]]; then
@@ -34,21 +34,19 @@ for file_path in "${file_paths[@]}"; do
     fi
 done
 
-# Calculate total size of all files in bytes
-total_size=$(du -c "${file_paths[@]}" | tail -1 | awk '{print $1}')
-
-# Upload using AWS CLI with progress bar (pv)
+# Upload each file individually
 echo "Uploading files to s3://$bucket_name..."
-tar -cf - "${file_paths[@]}" | pv -s "$total_size" | aws s3 cp - "s3://$bucket_name/archive_$(date +%Y%m%d%H%M%S).tar" 2>&1 | tee /tmp/aws_error.log
-
-
-if [ $? -eq 0 ]; then
-    echo "Upload complete!"
-else
-    echo "Upload failed. Please check the following error message from AWS CLI:"
-    cat /tmp/aws_error.log
-    exit 1
-fi
+for file_path in "${file_paths[@]}"; do
+    file_name=$(basename "$file_path")  # Extract file name
+    aws s3 cp "$file_path" "s3://$bucket_name/$file_name" 2>&1 | tee /tmp/aws_error.log
+    if [ $? -eq 0 ]; then
+        echo "Uploaded $file_name successfully!"
+    else
+        echo "Failed to upload $file_name. Please check the following error message from AWS CLI:"
+        cat /tmp/aws_error.log
+        exit 1
+    fi
+done
 
 # Clean up
 rm /tmp/aws_error.log
